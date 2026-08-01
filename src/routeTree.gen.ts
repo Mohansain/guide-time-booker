@@ -19,6 +19,7 @@ import { Route as AuthenticatedMentorReviewsRouteImport } from './routes/_authen
 import { Route as AuthenticatedMentorSettingsRouteImport } from './routes/_authenticated/mentor.settings'
 import { Route as AuthenticatedMentorSlotsRouteImport } from './routes/_authenticated/mentor.slots'
 import { Route as AuthenticatedStudentIndexRouteImport } from './routes/_authenticated/student.index'
+import { Route as AuthenticatedStudentBookingsRouteImport } from './routes/_authenticated/student.bookings'
 import { Route as AuthenticatedStudentMentorsRouteImport } from './routes/_authenticated/student.mentors'
 
 const IndexRoute = IndexRouteImport.update({
@@ -76,6 +77,12 @@ const AuthenticatedStudentIndexRoute =
     path: '/student/',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedStudentBookingsRoute =
+  AuthenticatedStudentBookingsRouteImport.update({
+    id: '/student/bookings',
+    path: '/student/bookings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedStudentMentorsRoute =
   AuthenticatedStudentMentorsRouteImport.update({
     id: '/student/mentors',
@@ -91,6 +98,7 @@ export interface FileRoutesByFullPath {
   '/mentor/reviews': typeof AuthenticatedMentorReviewsRoute
   '/mentor/settings': typeof AuthenticatedMentorSettingsRoute
   '/mentor/slots': typeof AuthenticatedMentorSlotsRoute
+  '/student/bookings': typeof AuthenticatedStudentBookingsRoute
   '/student/mentors': typeof AuthenticatedStudentMentorsRoute
   '/mentor/': typeof AuthenticatedMentorIndexRoute
   '/student/': typeof AuthenticatedStudentIndexRoute
@@ -103,6 +111,7 @@ export interface FileRoutesByTo {
   '/mentor/reviews': typeof AuthenticatedMentorReviewsRoute
   '/mentor/settings': typeof AuthenticatedMentorSettingsRoute
   '/mentor/slots': typeof AuthenticatedMentorSlotsRoute
+  '/student/bookings': typeof AuthenticatedStudentBookingsRoute
   '/student/mentors': typeof AuthenticatedStudentMentorsRoute
   '/mentor': typeof AuthenticatedMentorIndexRoute
   '/student': typeof AuthenticatedStudentIndexRoute
@@ -117,6 +126,7 @@ export interface FileRoutesById {
   '/_authenticated/mentor/reviews': typeof AuthenticatedMentorReviewsRoute
   '/_authenticated/mentor/settings': typeof AuthenticatedMentorSettingsRoute
   '/_authenticated/mentor/slots': typeof AuthenticatedMentorSlotsRoute
+  '/_authenticated/student/bookings': typeof AuthenticatedStudentBookingsRoute
   '/_authenticated/student/mentors': typeof AuthenticatedStudentMentorsRoute
   '/_authenticated/mentor/': typeof AuthenticatedMentorIndexRoute
   '/_authenticated/student/': typeof AuthenticatedStudentIndexRoute
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/mentor/reviews'
     | '/mentor/settings'
     | '/mentor/slots'
+    | '/student/bookings'
     | '/student/mentors'
     | '/mentor/'
     | '/student/'
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/mentor/reviews'
     | '/mentor/settings'
     | '/mentor/slots'
+    | '/student/bookings'
     | '/student/mentors'
     | '/mentor'
     | '/student'
@@ -156,6 +168,7 @@ export interface FileRouteTypes {
     | '/_authenticated/mentor/reviews'
     | '/_authenticated/mentor/settings'
     | '/_authenticated/mentor/slots'
+    | '/_authenticated/student/bookings'
     | '/_authenticated/student/mentors'
     | '/_authenticated/mentor/'
     | '/_authenticated/student/'
@@ -239,6 +252,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentIndexRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/student/bookings': {
+      id: '/_authenticated/student/bookings'
+      path: '/student/bookings'
+      fullPath: '/student/bookings'
+      preLoaderRoute: typeof AuthenticatedStudentBookingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/student/mentors': {
       id: '/_authenticated/student/mentors'
       path: '/student/mentors'
@@ -255,6 +275,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedMentorReviewsRoute: typeof AuthenticatedMentorReviewsRoute
   AuthenticatedMentorSettingsRoute: typeof AuthenticatedMentorSettingsRoute
   AuthenticatedMentorSlotsRoute: typeof AuthenticatedMentorSlotsRoute
+  AuthenticatedStudentBookingsRoute: typeof AuthenticatedStudentBookingsRoute
   AuthenticatedStudentMentorsRoute: typeof AuthenticatedStudentMentorsRoute
   AuthenticatedMentorIndexRoute: typeof AuthenticatedMentorIndexRoute
   AuthenticatedStudentIndexRoute: typeof AuthenticatedStudentIndexRoute
@@ -266,6 +287,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedMentorReviewsRoute: AuthenticatedMentorReviewsRoute,
   AuthenticatedMentorSettingsRoute: AuthenticatedMentorSettingsRoute,
   AuthenticatedMentorSlotsRoute: AuthenticatedMentorSlotsRoute,
+  AuthenticatedStudentBookingsRoute: AuthenticatedStudentBookingsRoute,
   AuthenticatedStudentMentorsRoute: AuthenticatedStudentMentorsRoute,
   AuthenticatedMentorIndexRoute: AuthenticatedMentorIndexRoute,
   AuthenticatedStudentIndexRoute: AuthenticatedStudentIndexRoute,
