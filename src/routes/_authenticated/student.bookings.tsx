@@ -191,9 +191,9 @@ function StudentBookings() {
               {submitReview.isPending ? <Loader2 className="animate-spin" /> : null} Submit review
             </Button>
           </DialogFooter>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </DialogContent>
+      </Dialog>
     </DashboardLayout>
+
   );
 }
