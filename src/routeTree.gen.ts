@@ -10,33 +10,161 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedMentorIndexRouteImport } from './routes/_authenticated/mentor.index'
+import { Route as AuthenticatedMentorBookingsRouteImport } from './routes/_authenticated/mentor.bookings'
+import { Route as AuthenticatedMentorReviewsRouteImport } from './routes/_authenticated/mentor.reviews'
+import { Route as AuthenticatedMentorSettingsRouteImport } from './routes/_authenticated/mentor.settings'
+import { Route as AuthenticatedMentorSlotsRouteImport } from './routes/_authenticated/mentor.slots'
+import { Route as AuthenticatedStudentIndexRouteImport } from './routes/_authenticated/student.index'
+import { Route as AuthenticatedStudentMentorsRouteImport } from './routes/_authenticated/student.mentors'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedMentorIndexRoute =
+  AuthenticatedMentorIndexRouteImport.update({
+    id: '/mentor/',
+    path: '/mentor/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMentorBookingsRoute =
+  AuthenticatedMentorBookingsRouteImport.update({
+    id: '/mentor/bookings',
+    path: '/mentor/bookings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMentorReviewsRoute =
+  AuthenticatedMentorReviewsRouteImport.update({
+    id: '/mentor/reviews',
+    path: '/mentor/reviews',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMentorSettingsRoute =
+  AuthenticatedMentorSettingsRouteImport.update({
+    id: '/mentor/settings',
+    path: '/mentor/settings',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedMentorSlotsRoute =
+  AuthenticatedMentorSlotsRouteImport.update({
+    id: '/mentor/slots',
+    path: '/mentor/slots',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentIndexRoute =
+  AuthenticatedStudentIndexRouteImport.update({
+    id: '/student/',
+    path: '/student/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentMentorsRoute =
+  AuthenticatedStudentMentorsRouteImport.update({
+    id: '/student/mentors',
+    path: '/student/mentors',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/mentor/bookings': typeof AuthenticatedMentorBookingsRoute
+  '/mentor/reviews': typeof AuthenticatedMentorReviewsRoute
+  '/mentor/settings': typeof AuthenticatedMentorSettingsRoute
+  '/mentor/slots': typeof AuthenticatedMentorSlotsRoute
+  '/student/mentors': typeof AuthenticatedStudentMentorsRoute
+  '/mentor/': typeof AuthenticatedMentorIndexRoute
+  '/student/': typeof AuthenticatedStudentIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/mentor/bookings': typeof AuthenticatedMentorBookingsRoute
+  '/mentor/reviews': typeof AuthenticatedMentorReviewsRoute
+  '/mentor/settings': typeof AuthenticatedMentorSettingsRoute
+  '/mentor/slots': typeof AuthenticatedMentorSlotsRoute
+  '/student/mentors': typeof AuthenticatedStudentMentorsRoute
+  '/mentor': typeof AuthenticatedMentorIndexRoute
+  '/student': typeof AuthenticatedStudentIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/mentor/bookings': typeof AuthenticatedMentorBookingsRoute
+  '/_authenticated/mentor/reviews': typeof AuthenticatedMentorReviewsRoute
+  '/_authenticated/mentor/settings': typeof AuthenticatedMentorSettingsRoute
+  '/_authenticated/mentor/slots': typeof AuthenticatedMentorSlotsRoute
+  '/_authenticated/student/mentors': typeof AuthenticatedStudentMentorsRoute
+  '/_authenticated/mentor/': typeof AuthenticatedMentorIndexRoute
+  '/_authenticated/student/': typeof AuthenticatedStudentIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/mentor/bookings'
+    | '/mentor/reviews'
+    | '/mentor/settings'
+    | '/mentor/slots'
+    | '/student/mentors'
+    | '/mentor/'
+    | '/student/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/dashboard'
+    | '/mentor/bookings'
+    | '/mentor/reviews'
+    | '/mentor/settings'
+    | '/mentor/slots'
+    | '/student/mentors'
+    | '/mentor'
+    | '/student'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/mentor/bookings'
+    | '/_authenticated/mentor/reviews'
+    | '/_authenticated/mentor/settings'
+    | '/_authenticated/mentor/slots'
+    | '/_authenticated/student/mentors'
+    | '/_authenticated/mentor/'
+    | '/_authenticated/student/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,22 +176,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/mentor/': {
+      id: '/_authenticated/mentor/'
+      path: '/mentor'
+      fullPath: '/mentor/'
+      preLoaderRoute: typeof AuthenticatedMentorIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/mentor/bookings': {
+      id: '/_authenticated/mentor/bookings'
+      path: '/mentor/bookings'
+      fullPath: '/mentor/bookings'
+      preLoaderRoute: typeof AuthenticatedMentorBookingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/mentor/reviews': {
+      id: '/_authenticated/mentor/reviews'
+      path: '/mentor/reviews'
+      fullPath: '/mentor/reviews'
+      preLoaderRoute: typeof AuthenticatedMentorReviewsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/mentor/settings': {
+      id: '/_authenticated/mentor/settings'
+      path: '/mentor/settings'
+      fullPath: '/mentor/settings'
+      preLoaderRoute: typeof AuthenticatedMentorSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/mentor/slots': {
+      id: '/_authenticated/mentor/slots'
+      path: '/mentor/slots'
+      fullPath: '/mentor/slots'
+      preLoaderRoute: typeof AuthenticatedMentorSlotsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student/': {
+      id: '/_authenticated/student/'
+      path: '/student'
+      fullPath: '/student/'
+      preLoaderRoute: typeof AuthenticatedStudentIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/student/mentors': {
+      id: '/_authenticated/student/mentors'
+      path: '/student/mentors'
+      fullPath: '/student/mentors'
+      preLoaderRoute: typeof AuthenticatedStudentMentorsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedMentorBookingsRoute: typeof AuthenticatedMentorBookingsRoute
+  AuthenticatedMentorReviewsRoute: typeof AuthenticatedMentorReviewsRoute
+  AuthenticatedMentorSettingsRoute: typeof AuthenticatedMentorSettingsRoute
+  AuthenticatedMentorSlotsRoute: typeof AuthenticatedMentorSlotsRoute
+  AuthenticatedStudentMentorsRoute: typeof AuthenticatedStudentMentorsRoute
+  AuthenticatedMentorIndexRoute: typeof AuthenticatedMentorIndexRoute
+  AuthenticatedStudentIndexRoute: typeof AuthenticatedStudentIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedMentorBookingsRoute: AuthenticatedMentorBookingsRoute,
+  AuthenticatedMentorReviewsRoute: AuthenticatedMentorReviewsRoute,
+  AuthenticatedMentorSettingsRoute: AuthenticatedMentorSettingsRoute,
+  AuthenticatedMentorSlotsRoute: AuthenticatedMentorSlotsRoute,
+  AuthenticatedStudentMentorsRoute: AuthenticatedStudentMentorsRoute,
+  AuthenticatedMentorIndexRoute: AuthenticatedMentorIndexRoute,
+  AuthenticatedStudentIndexRoute: AuthenticatedStudentIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
