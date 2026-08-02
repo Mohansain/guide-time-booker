@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { startMonitoring } from "../lib/monitoring";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -138,6 +139,11 @@ function AuthSync() {
     return () => data.subscription.unsubscribe();
   }, [router, queryClient]);
 
+  return null;
+}
+
+function Monitoring() {
+  useEffect(() => startMonitoring(), []);
   return null;
 }
 
