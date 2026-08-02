@@ -200,13 +200,13 @@ function Landing() {
         </div>
       </header>
 
-      <main>
+      <main id="main">
         {/* Hero */}
         <section className="relative overflow-hidden bg-gradient-hero">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-20 lg:grid-cols-2 lg:py-28">
             <div className="animate-fade-up">
               <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
-                <Sparkles className="size-3.5 text-primary" />
+                <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
                 Race-safe booking, live availability
               </span>
               <h1 className="font-display mt-5 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
@@ -222,7 +222,7 @@ function Landing() {
                 <Button asChild variant="hero" size="lg">
                   <Link to={user ? dashboardTo : "/auth"}>
                     {user ? "Go to dashboard" : "Start free"}
-                    <ArrowRight className="size-4" />
+                    <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </Button>
                 <Button asChild variant="heroOutline" size="lg">
@@ -390,7 +390,7 @@ function Landing() {
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row">
           <div className="flex items-center gap-2">
-            <CalendarCheck className="size-4 text-primary" />
+            <CalendarCheck className="size-4 text-primary" aria-hidden="true" />
             <span className="font-medium text-foreground">MentorLoop</span>
           </div>
           <p>© {new Date().getFullYear()} MentorLoop. Book better mentoring.</p>
