@@ -18,6 +18,7 @@ import { StarRating } from "@/components/star-rating";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useCurrentUser, initials } from "@/hooks/use-current-user";
 import { publicTopMentorsQuery } from "@/lib/data";
+import { Reveal } from "@/components/reveal";
 import heroImage from "@/assets/hero-mentoring.jpg";
 
 export const Route = createFileRoute("/")({
@@ -36,11 +37,65 @@ export const Route = createFileRoute("/")({
           "Find a mentor, pick an open slot, and meet 1:1. Race-safe booking, live availability and honest ratings.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "index, follow" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              name: "MentorLoop",
+              description:
+                "Book 1:1 mentoring sessions with verified mentors using live availability and race-safe booking.",
+            },
+            {
+              "@type": "Organization",
+              name: "MentorLoop",
+              description: "A mentor booking platform connecting students with expert mentors.",
+            },
+            {
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "How do I book a mentoring session?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Create a student account, browse mentors by specialization or rating, pick an open slot and confirm — the session is booked instantly with its own meeting link.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can two students book the same slot?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "No. Every booking runs inside a row-locked database transaction, so a slot can only ever be claimed once.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "How are mentor ratings calculated?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Only students who completed a session can leave a review, and mentor averages update automatically from those reviews.",
+                  },
+                },
+              ],
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: Landing,
 });
+
 
 const features = [
   {
@@ -99,12 +154,18 @@ function Landing() {
   const dashboardTo = user?.role === "mentor" ? "/mentor" : "/student";
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-dvh bg-background text-foreground">
+      <a
+        href="#main"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-primary-foreground"
+      >
+        Skip to main content
+      </a>
       <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2" aria-label="MentorLoop home">
             <span className="grid size-9 place-items-center rounded-xl bg-gradient-brand text-primary-foreground shadow-[var(--shadow-glow)]">
-              <CalendarCheck className="size-5" />
+              <CalendarCheck className="size-5" aria-hidden="true" />
             </span>
             <span className="font-display text-lg font-bold tracking-tight">MentorLoop</span>
           </Link>
@@ -139,13 +200,13 @@ function Landing() {
         </div>
       </header>
 
-      <main>
+      <main id="main">
         {/* Hero */}
         <section className="relative overflow-hidden bg-gradient-hero">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-20 lg:grid-cols-2 lg:py-28">
             <div className="animate-fade-up">
               <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
-                <Sparkles className="size-3.5 text-primary" />
+                <Sparkles className="size-3.5 text-primary" aria-hidden="true" />
                 Race-safe booking, live availability
               </span>
               <h1 className="font-display mt-5 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
@@ -161,7 +222,7 @@ function Landing() {
                 <Button asChild variant="hero" size="lg">
                   <Link to={user ? dashboardTo : "/auth"}>
                     {user ? "Go to dashboard" : "Start free"}
-                    <ArrowRight className="size-4" />
+                    <ArrowRight className="size-4" aria-hidden="true" />
                   </Link>
                 </Button>
                 <Button asChild variant="heroOutline" size="lg">
@@ -208,16 +269,18 @@ function Landing() {
             </p>
           </div>
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {features.map((f) => (
-              <Card key={f.title} className="card-surface border-border/60 transition-transform hover:-translate-y-1">
-                <CardContent className="p-6">
-                  <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
-                    <f.icon className="size-5" />
-                  </span>
-                  <h3 className="font-display mt-4 text-base font-semibold">{f.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
-                </CardContent>
-              </Card>
+            {features.map((f, i) => (
+              <Reveal key={f.title} delay={i * 80}>
+                <Card className="card-surface h-full border-border/60 transition-transform duration-300 hover:-translate-y-1">
+                  <CardContent className="p-6">
+                    <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
+                      <f.icon className="size-5" aria-hidden="true" />
+                    </span>
+                    <h3 className="font-display mt-4 text-base font-semibold">{f.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
+                  </CardContent>
+                </Card>
+              </Reveal>
             ))}
           </div>
         </section>
@@ -230,16 +293,16 @@ function Landing() {
             </h2>
             <ol className="mt-10 grid gap-6 md:grid-cols-3">
               {steps.map((s, i) => (
-                <li key={s.title} className="card-surface rounded-2xl p-6">
+                <Reveal as="li" key={s.title} delay={i * 120} className="card-surface rounded-2xl p-6">
                   <div className="flex items-center gap-3">
                     <span className="grid size-9 place-items-center rounded-full bg-gradient-brand text-sm font-semibold text-primary-foreground">
                       {i + 1}
                     </span>
-                    <s.icon className="size-5 text-primary" />
+                    <s.icon className="size-5 text-primary" aria-hidden="true" />
                   </div>
                   <h3 className="font-display mt-4 text-base font-semibold">{s.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
-                </li>
+                </Reveal>
               ))}
             </ol>
           </div>
@@ -263,8 +326,9 @@ function Landing() {
 
           {mentors && mentors.length > 0 ? (
             <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-              {mentors.map((m) => (
-                <Card key={m.id} className="card-surface border-border/60">
+              {mentors.map((m, i) => (
+                <Reveal key={m.id} delay={i * 80}>
+                <Card className="card-surface border-border/60">
                   <CardContent className="p-6">
                     <div className="flex items-center gap-3">
                       <span className="grid size-11 place-items-center rounded-full bg-primary/10 font-semibold text-primary">
@@ -280,12 +344,16 @@ function Landing() {
                     {m.bio ? (
                       <p className="mt-4 line-clamp-3 text-sm text-muted-foreground">{m.bio}</p>
                     ) : null}
-                    <div className="mt-4 flex items-center">
+                    <div
+                      className="mt-4 flex items-center"
+                      aria-label={`Rated ${Number(m.rating ?? 0).toFixed(1)} out of 5`}
+                    >
                       <StarRating value={Number(m.rating ?? 0)} />
                       <span className="ml-2 text-xs text-muted-foreground">{Number(m.rating ?? 0).toFixed(1)}</span>
                     </div>
                   </CardContent>
                 </Card>
+                </Reveal>
               ))}
             </div>
           ) : (
@@ -322,7 +390,7 @@ function Landing() {
       <footer className="border-t border-border/60 py-8">
         <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-3 px-4 text-sm text-muted-foreground sm:flex-row">
           <div className="flex items-center gap-2">
-            <CalendarCheck className="size-4 text-primary" />
+            <CalendarCheck className="size-4 text-primary" aria-hidden="true" />
             <span className="font-medium text-foreground">MentorLoop</span>
           </div>
           <p>© {new Date().getFullYear()} MentorLoop. Book better mentoring.</p>

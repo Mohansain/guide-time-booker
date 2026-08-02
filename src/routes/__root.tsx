@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { startMonitoring } from "../lib/monitoring";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -141,6 +142,11 @@ function AuthSync() {
   return null;
 }
 
+function Monitoring() {
+  useEffect(() => startMonitoring(), []);
+  return null;
+}
+
 function ThemeBoot() {
   useEffect(() => {
     const stored = localStorage.getItem("mentorloop-theme");
@@ -158,6 +164,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeBoot />
+      <Monitoring />
       <AuthSync />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
