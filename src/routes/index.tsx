@@ -36,11 +36,65 @@ export const Route = createFileRoute("/")({
           "Find a mentor, pick an open slot, and meet 1:1. Race-safe booking, live availability and honest ratings.",
       },
       { property: "og:type", content: "website" },
+      { property: "og:url", content: "/" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "robots", content: "index, follow" },
+    ],
+    links: [{ rel: "canonical", href: "/" }],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "WebSite",
+              name: "MentorLoop",
+              description:
+                "Book 1:1 mentoring sessions with verified mentors using live availability and race-safe booking.",
+            },
+            {
+              "@type": "Organization",
+              name: "MentorLoop",
+              description: "A mentor booking platform connecting students with expert mentors.",
+            },
+            {
+              "@type": "FAQPage",
+              mainEntity: [
+                {
+                  "@type": "Question",
+                  name: "How do I book a mentoring session?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Create a student account, browse mentors by specialization or rating, pick an open slot and confirm — the session is booked instantly with its own meeting link.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "Can two students book the same slot?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "No. Every booking runs inside a row-locked database transaction, so a slot can only ever be claimed once.",
+                  },
+                },
+                {
+                  "@type": "Question",
+                  name: "How are mentor ratings calculated?",
+                  acceptedAnswer: {
+                    "@type": "Answer",
+                    text: "Only students who completed a session can leave a review, and mentor averages update automatically from those reviews.",
+                  },
+                },
+              ],
+            },
+          ],
+        }),
+      },
     ],
   }),
   component: Landing,
 });
+
 
 const features = [
   {
