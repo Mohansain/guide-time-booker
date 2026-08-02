@@ -106,7 +106,7 @@ function Landing() {
             <span className="grid size-9 place-items-center rounded-xl bg-gradient-brand text-primary-foreground shadow-[var(--shadow-glow)]">
               <CalendarCheck className="size-5" />
             </span>
-            <span className="font-heading text-lg font-bold tracking-tight">MentorLoop</span>
+            <span className="font-display text-lg font-bold tracking-tight">MentorLoop</span>
           </Link>
           <nav className="hidden items-center gap-6 text-sm text-muted-foreground md:flex">
             <a href="#features" className="transition-colors hover:text-foreground">
@@ -143,12 +143,12 @@ function Landing() {
         {/* Hero */}
         <section className="relative overflow-hidden bg-gradient-hero">
           <div className="mx-auto grid w-full max-w-6xl items-center gap-12 px-4 py-20 lg:grid-cols-2 lg:py-28">
-            <div className="animate-in">
+            <div className="animate-fade-up">
               <span className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-background/70 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
                 <Sparkles className="size-3.5 text-primary" />
                 Race-safe booking, live availability
               </span>
-              <h1 className="font-heading mt-5 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
+              <h1 className="font-display mt-5 text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">
                 Book the mentor you need,{" "}
                 <span className="text-gradient-brand">in seconds</span>
               </h1>
@@ -175,7 +175,7 @@ function Landing() {
                   { k: "1:1", v: "focused sessions" },
                 ].map((s) => (
                   <div key={s.v}>
-                    <dt className="font-heading text-2xl font-bold">{s.k}</dt>
+                    <dt className="font-display text-2xl font-bold">{s.k}</dt>
                     <dd className="text-xs text-muted-foreground">{s.v}</dd>
                   </div>
                 ))}
@@ -199,7 +199,7 @@ function Landing() {
         {/* Features */}
         <section id="features" className="mx-auto w-full max-w-6xl px-4 py-20">
           <div className="max-w-2xl">
-            <h2 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
               Everything a booking system should already do
             </h2>
             <p className="mt-3 text-muted-foreground">
@@ -214,7 +214,7 @@ function Landing() {
                   <span className="grid size-10 place-items-center rounded-xl bg-primary/10 text-primary">
                     <f.icon className="size-5" />
                   </span>
-                  <h3 className="font-heading mt-4 text-base font-semibold">{f.title}</h3>
+                  <h3 className="font-display mt-4 text-base font-semibold">{f.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{f.body}</p>
                 </CardContent>
               </Card>
@@ -225,7 +225,7 @@ function Landing() {
         {/* How it works */}
         <section id="how-it-works" className="border-y border-border/60 bg-muted/30 py-20">
           <div className="mx-auto w-full max-w-6xl px-4">
-            <h2 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
               Three steps, no back-and-forth
             </h2>
             <ol className="mt-10 grid gap-6 md:grid-cols-3">
@@ -237,7 +237,7 @@ function Landing() {
                     </span>
                     <s.icon className="size-5 text-primary" />
                   </div>
-                  <h3 className="font-heading mt-4 text-base font-semibold">{s.title}</h3>
+                  <h3 className="font-display mt-4 text-base font-semibold">{s.title}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.body}</p>
                 </li>
               ))}
@@ -249,7 +249,7 @@ function Landing() {
         <section id="mentors" className="mx-auto w-full max-w-6xl px-4 py-20">
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
-              <h2 className="font-heading text-3xl font-bold tracking-tight sm:text-4xl">
+              <h2 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">
                 Top-rated mentors
               </h2>
               <p className="mt-3 text-muted-foreground">
@@ -280,8 +280,9 @@ function Landing() {
                     {m.bio ? (
                       <p className="mt-4 line-clamp-3 text-sm text-muted-foreground">{m.bio}</p>
                     ) : null}
-                    <div className="mt-4">
-                      <StarRating value={Number(m.rating ?? 0)} showValue />
+                    <div className="mt-4 flex items-center">
+                      <StarRating value={Number(m.rating ?? 0)} />
+                      <span className="ml-2 text-xs text-muted-foreground">{Number(m.rating ?? 0).toFixed(1)}</span>
                     </div>
                   </CardContent>
                 </Card>
@@ -302,7 +303,7 @@ function Landing() {
         {/* CTA */}
         <section className="px-4 pb-24">
           <div className="mx-auto w-full max-w-6xl overflow-hidden rounded-3xl bg-gradient-brand px-6 py-14 text-center shadow-[var(--shadow-glow)]">
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
+            <h2 className="font-display text-3xl font-bold tracking-tight text-primary-foreground sm:text-4xl">
               Your next session is one click away
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-primary-foreground/85">
