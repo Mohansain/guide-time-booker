@@ -124,6 +124,33 @@ export const mentorDirectoryQuery = () =>
       ),
   });
 
+export type MentorWithSlots = MentorWithProfile & { slots: Slot[] };
+
+/**
+ * Mentor-first browse list: every mentor is returned (even with no open slots)
+ * so search by name / skill / bio always finds them.
+ */
+export const mentorsWithSlotsQuery = () =>
+  queryOptions({
+    queryKey: ["mentors-with-slots"],
+    queryFn: async () => {
+      const today = new Date().toISOString().slice(0, 10);
+      const mentors = unwrap<MentorWithSlots[]>(
+        await supabase
+          .from("mentors")
+          .select("*, profile:profiles(*), slots(*)")
+          .order("rating", { ascending: false }),
+      );
+      return mentors.map((mentor) => ({
+        ...mentor,
+        slots: (mentor.slots ?? [])
+          .filter((slot) => slot.status === "AVAILABLE" && slot.date >= today)
+          .sort((a, b) => `${a.date}${a.start_time}`.localeCompare(`${b.date}${b.start_time}`)),
+      }));
+    },
+  });
+
+
 export const studentBookingsQuery = (studentId: string | undefined) =>
   queryOptions({
     queryKey: ["student-bookings", studentId],
