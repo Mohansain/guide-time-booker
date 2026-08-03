@@ -1,4 +1,5 @@
 import { reportLovableError } from "./lovable-error-reporting";
+import { checkVitalAlert, trackErrorForAlerting } from "./alerting";
 
 type Metric = { name: string; value: number };
 
@@ -19,10 +20,12 @@ export function startMonitoring(): () => void {
   const onError = (event: ErrorEvent) => {
     log("error", { message: event.message, filename: event.filename });
     reportLovableError(event.error ?? event.message, { boundary: "window_onerror" });
+    trackErrorForAlerting(event.message);
   };
   const onRejection = (event: PromiseRejectionEvent) => {
     log("unhandledrejection", { reason: String(event.reason) });
     reportLovableError(event.reason, { boundary: "unhandledrejection" });
+    trackErrorForAlerting(String(event.reason));
   };
 
   window.addEventListener("error", onError);
@@ -39,7 +42,10 @@ export function startMonitoring(): () => void {
     }
   };
 
-  const report = ({ name, value }: Metric) => log("vital", { name, value: Math.round(value) });
+  const report = ({ name, value }: Metric) => {
+    log("vital", { name, value: Math.round(value) });
+    checkVitalAlert(name, value);
+  };
 
   observe("largest-contentful-paint", (list) => {
     const last = list.getEntries().at(-1);

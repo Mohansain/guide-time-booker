@@ -251,6 +251,9 @@ function Landing() {
                   width={1024}
                   height={768}
                   loading="eager"
+                  decoding="async"
+                  fetchPriority="high"
+                  sizes="(max-width: 1024px) 100vw, 512px"
                 />
               </div>
             </div>

@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CalendarDays, Loader2, Search } from "lucide-react";
+import { CalendarDays, Loader2, Search, Users } from "lucide-react";
 import { toast } from "sonner";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
 import { studentNav } from "@/components/dashboard/nav-items";
@@ -14,15 +14,21 @@ import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
 import { initials } from "@/hooks/use-current-user";
 import { useRoleGuard } from "@/hooks/use-role-guard";
-import { availableSlotsQuery, bookSlot, formatDate, formatTime } from "@/lib/data";
+import { bookSlot, formatDate, formatTime, mentorsWithSlotsQuery } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/student/mentors")({
   head: () => ({
     meta: [
       { title: "Find Mentors — MentorLoop" },
-      { name: "description", content: "Browse available mentor slots and book a session instantly." },
+      {
+        name: "description",
+        content: "Search mentors by name, skill or bio and book an available slot instantly.",
+      },
       { property: "og:title", content: "Find Mentors — MentorLoop" },
-      { property: "og:description", content: "Search mentors by name, skill or date and book a slot." },
+      {
+        property: "og:description",
+        content: "Search mentors by name, skill or date and book a slot.",
+      },
     ],
   }),
   component: FindMentors,
@@ -31,7 +37,7 @@ export const Route = createFileRoute("/_authenticated/student/mentors")({
 function FindMentors() {
   useRoleGuard("student");
   const queryClient = useQueryClient();
-  const slots = useQuery(availableSlotsQuery());
+  const mentors = useQuery(mentorsWithSlotsQuery());
   const [search, setSearch] = useState("");
   const [date, setDate] = useState("");
   const [pendingId, setPendingId] = useState<string | null>(null);
@@ -40,6 +46,7 @@ function FindMentors() {
     mutationFn: bookSlot,
     onSuccess: () => {
       toast.success("Session booked! Check My Bookings for details.");
+      void queryClient.invalidateQueries({ queryKey: ["mentors-with-slots"] });
       void queryClient.invalidateQueries({ queryKey: ["available-slots"] });
       void queryClient.invalidateQueries({ queryKey: ["student-bookings"] });
     },
@@ -49,86 +56,155 @@ function FindMentors() {
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase();
-    return (slots.data ?? []).filter((slot) => {
-      const matchesDate = !date || slot.date === date;
-      const haystack = `${slot.mentor?.profile?.name ?? ""} ${slot.mentor?.specialization ?? ""}`.toLowerCase();
-      return matchesDate && (!term || haystack.includes(term));
-    });
-  }, [date, search, slots.data]);
+    return (mentors.data ?? [])
+      .map((mentor) => ({
+        ...mentor,
+        slots: date ? mentor.slots.filter((slot) => slot.date === date) : mentor.slots,
+      }))
+      .filter((mentor) => {
+        if (date && mentor.slots.length === 0) return false;
+        if (!term) return true;
+        const haystack = [
+          mentor.profile?.name,
+          mentor.profile?.email,
+          mentor.specialization,
+          mentor.bio,
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(term);
+      });
+  }, [date, search, mentors.data]);
+
+  const hasMentors = (mentors.data ?? []).length > 0;
 
   return (
-    <DashboardLayout items={studentNav} title="Find mentors" subtitle="Book any available slot instantly">
+    <DashboardLayout
+      items={studentNav}
+      title="Find mentors"
+      subtitle="Search by mentor, skill or bio — then book any open slot"
+    >
       <div className="mb-5 flex flex-wrap gap-3">
         <div className="relative min-w-56 flex-1">
-          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <Search
+            className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
           <Input
             className="pl-9"
-            placeholder="Search by mentor or skill"
+            aria-label="Search mentors"
+            placeholder="Search by mentor, skill or keyword"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Input type="date" className="w-auto" value={date} onChange={(e) => setDate(e.target.value)} />
-        {date ? (
-          <Button variant="ghost" onClick={() => setDate("")}>
-            Clear date
+        <Input
+          type="date"
+          aria-label="Filter by date"
+          className="w-auto"
+          value={date}
+          onChange={(e) => setDate(e.target.value)}
+        />
+        {search || date ? (
+          <Button
+            variant="ghost"
+            onClick={() => {
+              setSearch("");
+              setDate("");
+            }}
+          >
+            Clear filters
           </Button>
         ) : null}
       </div>
 
-      {slots.isLoading ? (
+      {mentors.isLoading ? (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {[0, 1, 2, 3, 4, 5].map((i) => (
-            <Skeleton key={i} className="h-44 w-full rounded-2xl" />
+            <Skeleton key={i} className="h-52 w-full rounded-2xl" />
           ))}
         </div>
+      ) : !hasMentors ? (
+        <EmptyState
+          icon={Users}
+          title="No mentors have joined yet"
+          description="Once mentors create their profiles they'll show up here and you can book their open slots."
+        />
       ) : filtered.length === 0 ? (
         <EmptyState
-          icon={CalendarDays}
-          title="No slots match your filters"
-          description="Try a different date or clear the search to see everything that's available."
+          icon={Search}
+          title={`No mentors match ${search ? `"${search.trim()}"` : "your filters"}`}
+          description="Try a different name or skill, or clear the filters to see every mentor."
         />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map((slot) => (
-            <Card key={slot.id} className="card-surface animate-fade-up border-0">
+          {filtered.map((mentor) => (
+            <Card key={mentor.id} className="card-surface animate-fade-up border-0">
               <CardContent className="p-5">
                 <div className="flex items-center gap-3">
                   <Avatar className="size-11">
-                    <AvatarImage src={slot.mentor?.profile?.avatar ?? undefined} alt="" />
-                    <AvatarFallback>{initials(slot.mentor?.profile?.name)}</AvatarFallback>
+                    <AvatarImage src={mentor.profile?.avatar ?? undefined} alt="" loading="lazy" />
+                    <AvatarFallback>{initials(mentor.profile?.name)}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
-                    <p className="truncate font-medium">{slot.mentor?.profile?.name || "Mentor"}</p>
+                    <p className="truncate font-medium">{mentor.profile?.name || "Mentor"}</p>
                     <p className="truncate text-xs text-muted-foreground">
-                      {slot.mentor?.specialization || "Mentor"}
+                      {mentor.specialization || "Mentor"}
                     </p>
                   </div>
                 </div>
                 <div className="mt-3 flex items-center gap-2">
-                  <StarRating value={Number(slot.mentor?.rating ?? 0)} size="sm" />
+                  <StarRating value={Number(mentor.rating ?? 0)} size="sm" />
                   <span className="text-xs text-muted-foreground">
-                    {Number(slot.mentor?.rating ?? 0).toFixed(1)} · {slot.mentor?.total_reviews ?? 0} reviews
+                    {Number(mentor.rating ?? 0).toFixed(1)} · {mentor.total_reviews ?? 0} reviews
                   </span>
                 </div>
-                <div className="mt-4 rounded-xl bg-muted/60 p-3 text-sm">
-                  <p className="font-medium">{formatDate(slot.date)}</p>
-                  <p className="text-muted-foreground">
-                    {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
+                {mentor.bio ? (
+                  <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{mentor.bio}</p>
+                ) : null}
+
+                {mentor.slots.length === 0 ? (
+                  <p className="mt-4 flex items-center gap-2 rounded-xl bg-muted/60 p-3 text-sm text-muted-foreground">
+                    <CalendarDays className="size-4" aria-hidden="true" />
+                    No open slots right now
                   </p>
-                </div>
-                <Button
-                  variant="hero"
-                  className="mt-4 w-full"
-                  disabled={book.isPending}
-                  onClick={() => {
-                    setPendingId(slot.id);
-                    book.mutate(slot.id);
-                  }}
-                >
-                  {book.isPending && pendingId === slot.id ? <Loader2 className="animate-spin" /> : null}
-                  Book session
-                </Button>
+                ) : (
+                  <ul className="mt-4 space-y-2">
+                    {mentor.slots.slice(0, 3).map((slot) => (
+                      <li
+                        key={slot.id}
+                        className="flex items-center justify-between gap-3 rounded-xl bg-muted/60 p-3 text-sm"
+                      >
+                        <span className="min-w-0">
+                          <span className="block truncate font-medium">{formatDate(slot.date)}</span>
+                          <span className="block text-xs text-muted-foreground">
+                            {formatTime(slot.start_time)} – {formatTime(slot.end_time)}
+                          </span>
+                        </span>
+                        <Button
+                          size="sm"
+                          variant="hero"
+                          disabled={book.isPending}
+                          onClick={() => {
+                            setPendingId(slot.id);
+                            book.mutate(slot.id);
+                          }}
+                        >
+                          {book.isPending && pendingId === slot.id ? (
+                            <Loader2 className="animate-spin" aria-hidden="true" />
+                          ) : null}
+                          Book
+                        </Button>
+                      </li>
+                    ))}
+                    {mentor.slots.length > 3 ? (
+                      <li className="text-xs text-muted-foreground">
+                        +{mentor.slots.length - 3} more open slots
+                      </li>
+                    ) : null}
+                  </ul>
+                )}
               </CardContent>
             </Card>
           ))}
