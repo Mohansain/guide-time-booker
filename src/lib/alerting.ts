@@ -85,6 +85,7 @@ export function trackErrorForAlerting(message: string) {
       severity: "critical",
       message: `${recentErrors.length} client errors in ${ERROR_BURST_WINDOW_MS / 1000}s`,
       detail: { lastError: message },
+      forward: true,
     });
   }
 }
