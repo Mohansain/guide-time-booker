@@ -32,8 +32,12 @@ function throttled(key: string) {
   return false;
 }
 
-/** Emits an alert: greppable console output + forwarded to error reporting. */
-export function raiseAlert(alert: Alert) {
+/**
+ * Emits an alert as greppable console output. Only alerts that represent a real
+ * failure (`forward: true`) go to error reporting — performance-threshold alerts
+ * must not surface as runtime errors.
+ */
+export function raiseAlert(alert: Alert & { forward?: boolean }) {
   if (throttled(alert.key)) return;
 
   const payload = {
@@ -47,8 +51,11 @@ export function raiseAlert(alert: Alert) {
   if (alert.severity === "critical") console.error(`[alert] ${alert.message}`, payload);
   else console.warn(`[alert] ${alert.message}`, payload);
 
-  reportLovableError(new Error(`[alert:${alert.severity}] ${alert.message}`), payload);
+  if (alert.forward) {
+    reportLovableError(new Error(`[alert:${alert.severity}] ${alert.message}`), payload);
+  }
 }
+
 
 /** Alert when a Core Web Vital crosses its threshold. */
 export function checkVitalAlert(name: string, value: number) {
@@ -78,6 +85,7 @@ export function trackErrorForAlerting(message: string) {
       severity: "critical",
       message: `${recentErrors.length} client errors in ${ERROR_BURST_WINDOW_MS / 1000}s`,
       detail: { lastError: message },
+      forward: true,
     });
   }
 }
