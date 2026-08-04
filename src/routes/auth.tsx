@@ -16,6 +16,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (s: Record<string, unknown>): { next?: string } =>
+    typeof s['next'] === "string" && s['next'].startsWith("/") ? { next: s['next'] } : {},
   head: () => ({
     meta: [
       { title: "Sign in — MentorLoop" },
@@ -49,14 +51,26 @@ type SignUpValues = z.infer<typeof signUpSchema>;
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { next } = Route.useSearch();
+  // Same-origin relative path only (validated in validateSearch).
+  const afterAuth = next ?? "/dashboard";
+
+  function goAfterAuth() {
+    if (next) {
+      window.location.href = next;
+      return;
+    }
+    navigate({ to: "/dashboard", replace: true });
+  }
   const [role, setRole] = useState<"student" | "mentor">("student");
   const [googleLoading, setGoogleLoading] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/dashboard", replace: true });
+      if (data.session) goAfterAuth();
     });
-  }, [navigate]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [navigate, next]);
 
   const signInForm = useForm<SignInValues>({
     resolver: zodResolver(signInSchema),
@@ -75,7 +89,7 @@ function AuthPage() {
       return;
     }
     toast.success("Welcome back!");
-    navigate({ to: "/dashboard", replace: true });
+    goAfterAuth();
   }
 
   async function onSignUp(values: SignUpValues) {
@@ -83,7 +97,7 @@ function AuthPage() {
       email: values.email,
       password: values.password,
       options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
+        emailRedirectTo: `${window.location.origin}${afterAuth}`,
         data: {
           name: values.name,
           role,
@@ -97,13 +111,13 @@ function AuthPage() {
       return;
     }
     toast.success("Account created — you're all set!");
-    navigate({ to: "/dashboard", replace: true });
+    goAfterAuth();
   }
 
   async function onGoogle() {
     setGoogleLoading(true);
     const result = await lovable.auth.signInWithOAuth("google", {
-      redirect_uri: window.location.origin,
+      redirect_uri: `${window.location.origin}${afterAuth}`,
     });
     if (result.error) {
       setGoogleLoading(false);
@@ -111,7 +125,7 @@ function AuthPage() {
       return;
     }
     if (result.redirected) return;
-    navigate({ to: "/dashboard", replace: true });
+    goAfterAuth();
   }
 
   return (
