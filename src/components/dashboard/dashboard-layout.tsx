@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/s
 import { ThemeToggle } from "@/components/theme-toggle";
 import { initials, useCurrentUser } from "@/hooks/use-current-user";
 import { cn } from "@/lib/utils";
+import { avatarSrc } from "@/lib/avatar";
 
 export interface NavItem {
   label: string;
@@ -88,7 +89,7 @@ export function DashboardLayout({
         <div className="rounded-xl border border-sidebar-border bg-sidebar-accent/50 p-3">
           <div className="flex items-center gap-3">
             <Avatar className="size-9">
-              <AvatarImage src={user?.profile?.avatar ?? undefined} alt="" />
+              <AvatarImage src={avatarSrc(user?.profile?.avatar)} alt="" />
               <AvatarFallback>{initials(user?.profile?.name)}</AvatarFallback>
             </Avatar>
             <div className="min-w-0">

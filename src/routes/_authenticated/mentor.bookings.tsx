@@ -13,6 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { initials } from "@/hooks/use-current-user";
 import { useRoleGuard } from "@/hooks/use-role-guard";
+import { avatarSrc } from "@/lib/avatar";
 import {
   cancelBooking,
   completeBooking,
@@ -124,7 +125,7 @@ function BookingRow({
     <Card className="card-surface animate-fade-up border-0">
       <CardContent className="flex flex-wrap items-center gap-4 p-5">
         <Avatar className="size-11">
-          <AvatarImage src={booking.student?.avatar ?? undefined} alt="" />
+          <AvatarImage src={avatarSrc(booking.student?.avatar)} alt="" />
           <AvatarFallback>{initials(booking.student?.name)}</AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1">

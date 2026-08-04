@@ -4,7 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { AvatarUploader } from "@/components/avatar-uploader";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+
 import { mentorNav } from "@/components/dashboard/nav-items";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -76,8 +78,16 @@ function MentorSettings() {
           <CardTitle className="text-base">Mentor profile</CardTitle>
           <CardDescription>This information appears in the mentor directory.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
+          {user && (
+            <AvatarUploader
+              userId={user.id}
+              name={user.profile?.name}
+              avatar={user.profile?.avatar}
+            />
+          )}
           <div className="space-y-2">
+
             <Label htmlFor="name">Full name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>

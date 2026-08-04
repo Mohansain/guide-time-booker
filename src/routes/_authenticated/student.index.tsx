@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { initials } from "@/hooks/use-current-user";
 import { useRoleGuard } from "@/hooks/use-role-guard";
+import { avatarSrc } from "@/lib/avatar";
 import {
   expireStaleSessions,
   formatDate,
@@ -116,7 +117,7 @@ function StudentDashboard() {
                 >
                   <div className="flex items-center gap-3">
                     <Avatar className="size-9">
-                      <AvatarImage src={booking.mentor?.profile?.avatar ?? undefined} alt="" />
+                      <AvatarImage src={avatarSrc(booking.mentor?.profile?.avatar)} alt="" />
                       <AvatarFallback>{initials(booking.mentor?.profile?.name)}</AvatarFallback>
                     </Avatar>
                     <div>
@@ -146,7 +147,7 @@ function StudentDashboard() {
               (mentors.data ?? []).slice(0, 5).map((mentor) => (
                 <div key={mentor.id} className="flex items-center gap-3">
                   <Avatar className="size-9">
-                    <AvatarImage src={mentor.profile?.avatar ?? undefined} alt="" />
+                    <AvatarImage src={avatarSrc(mentor.profile?.avatar)} alt="" />
                     <AvatarFallback>{initials(mentor.profile?.name)}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0 flex-1">

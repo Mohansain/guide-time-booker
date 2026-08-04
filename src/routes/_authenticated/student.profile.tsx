@@ -4,7 +4,9 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Loader2, Save } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { AvatarUploader } from "@/components/avatar-uploader";
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout";
+
 import { studentNav } from "@/components/dashboard/nav-items";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -54,8 +56,16 @@ function StudentProfile() {
           <CardTitle className="text-base">Student profile</CardTitle>
           <CardDescription>Your name is shown to mentors on their bookings.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-6">
+          {user && (
+            <AvatarUploader
+              userId={user.id}
+              name={user.profile?.name}
+              avatar={user.profile?.avatar}
+            />
+          )}
           <div className="space-y-2">
+
             <Label htmlFor="name">Full name</Label>
             <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
           </div>
