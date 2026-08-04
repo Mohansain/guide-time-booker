@@ -19,5 +19,12 @@ export default defineMcp({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",
   }),
-  tools: [listMentorsTool, listAvailableSlotsTool, listMyBookingsTool, bookSlotTool, cancelBookingTool],
+  // Cast: the SDK's optional `outputSchema` conflicts with exactOptionalPropertyTypes.
+  tools: [
+    listMentorsTool,
+    listAvailableSlotsTool,
+    listMyBookingsTool,
+    bookSlotTool,
+    cancelBookingTool,
+  ] as unknown as Parameters<typeof defineMcp>[0]["tools"],
 });
