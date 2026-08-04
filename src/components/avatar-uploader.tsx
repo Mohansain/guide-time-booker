@@ -18,8 +18,8 @@ import { cleanDbError } from "@/lib/data";
 
 interface AvatarUploaderProps {
   userId: string;
-  name?: string | null;
-  avatar?: string | null;
+  name?: string | null | undefined;
+  avatar?: string | null | undefined;
 }
 
 export function AvatarUploader({ userId, name, avatar }: AvatarUploaderProps) {
