@@ -24,6 +24,7 @@ import { Route as AuthenticatedStudentBookingsRouteImport } from './routes/_auth
 import { Route as AuthenticatedStudentMentorsRouteImport } from './routes/_authenticated/student.mentors'
 import { Route as AuthenticatedStudentProfileRouteImport } from './routes/_authenticated/student.profile'
 import { Route as AuthenticatedStudentReviewsRouteImport } from './routes/_authenticated/student.reviews'
+import { Route as ApiPublicAvatarsSplatRouteImport } from './routes/api/public/avatars.$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -109,6 +110,11 @@ const AuthenticatedStudentReviewsRoute =
     path: '/student/reviews',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicAvatarsSplatRoute = ApiPublicAvatarsSplatRouteImport.update({
+  id: '/api/public/avatars/$',
+  path: '/api/public/avatars/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -125,6 +131,7 @@ export interface FileRoutesByFullPath {
   '/student/reviews': typeof AuthenticatedStudentReviewsRoute
   '/mentor/': typeof AuthenticatedMentorIndexRoute
   '/student/': typeof AuthenticatedStudentIndexRoute
+  '/api/public/avatars/$': typeof ApiPublicAvatarsSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -141,6 +148,7 @@ export interface FileRoutesByTo {
   '/student/reviews': typeof AuthenticatedStudentReviewsRoute
   '/mentor': typeof AuthenticatedMentorIndexRoute
   '/student': typeof AuthenticatedStudentIndexRoute
+  '/api/public/avatars/$': typeof ApiPublicAvatarsSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,6 +167,7 @@ export interface FileRoutesById {
   '/_authenticated/student/reviews': typeof AuthenticatedStudentReviewsRoute
   '/_authenticated/mentor/': typeof AuthenticatedMentorIndexRoute
   '/_authenticated/student/': typeof AuthenticatedStudentIndexRoute
+  '/api/public/avatars/$': typeof ApiPublicAvatarsSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -177,6 +186,7 @@ export interface FileRouteTypes {
     | '/student/reviews'
     | '/mentor/'
     | '/student/'
+    | '/api/public/avatars/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
     | '/student/reviews'
     | '/mentor'
     | '/student'
+    | '/api/public/avatars/$'
   id:
     | '__root__'
     | '/'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/_authenticated/student/reviews'
     | '/_authenticated/mentor/'
     | '/_authenticated/student/'
+    | '/api/public/avatars/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -217,6 +229,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiPublicAvatarsSplatRoute: typeof ApiPublicAvatarsSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -326,6 +339,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentReviewsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/avatars/$': {
+      id: '/api/public/avatars/$'
+      path: '/api/public/avatars/$'
+      fullPath: '/api/public/avatars/$'
+      preLoaderRoute: typeof ApiPublicAvatarsSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -365,17 +385,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiPublicAvatarsSplatRoute: ApiPublicAvatarsSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
