@@ -14,8 +14,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { initials } from "@/hooks/use-current-user";
 import { useRoleGuard } from "@/hooks/use-role-guard";
-import {
 import { avatarSrc } from "@/lib/avatar";
+import {
   expireStaleSessions,
   formatDate,
   formatTime,
