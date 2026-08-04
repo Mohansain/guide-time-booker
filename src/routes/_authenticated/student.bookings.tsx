@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { initials } from "@/hooks/use-current-user";
 import { useRoleGuard } from "@/hooks/use-role-guard";
 import {
+import { avatarSrc } from "@/lib/avatar";
   cancelBooking,
   cleanDbError,
   formatDate,
@@ -123,7 +124,7 @@ function StudentBookings() {
                 <Card key={booking.id} className="card-surface animate-fade-up border-0">
                   <CardContent className="flex flex-wrap items-center gap-4 p-5">
                     <Avatar className="size-11">
-                      <AvatarImage src={booking.mentor?.profile?.avatar ?? undefined} alt="" />
+                      <AvatarImage src={avatarSrc(booking.mentor?.profile?.avatar)} alt="" />
                       <AvatarFallback>{initials(booking.mentor?.profile?.name)}</AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">

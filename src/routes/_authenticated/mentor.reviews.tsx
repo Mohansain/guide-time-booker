@@ -11,6 +11,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { initials } from "@/hooks/use-current-user";
 import { useRoleGuard } from "@/hooks/use-role-guard";
 import { mentorReviewsQuery } from "@/lib/data";
+import { avatarSrc } from "@/lib/avatar";
 
 export const Route = createFileRoute("/_authenticated/mentor/reviews")({
   head: () => ({
@@ -63,7 +64,7 @@ function MentorReviews() {
             <Card key={review.id} className="card-surface animate-fade-up border-0">
               <CardContent className="flex gap-4 p-5">
                 <Avatar className="size-10">
-                  <AvatarImage src={review.student?.avatar ?? undefined} alt="" />
+                  <AvatarImage src={avatarSrc(review.student?.avatar)} alt="" />
                   <AvatarFallback>{initials(review.student?.name)}</AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">

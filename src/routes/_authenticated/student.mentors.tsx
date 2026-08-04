@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { initials } from "@/hooks/use-current-user";
 import { useRoleGuard } from "@/hooks/use-role-guard";
 import { bookSlot, formatDate, formatTime, mentorsWithSlotsQuery } from "@/lib/data";
+import { avatarSrc } from "@/lib/avatar";
 
 export const Route = createFileRoute("/_authenticated/student/mentors")({
   head: () => ({
@@ -144,7 +145,7 @@ function FindMentors() {
               <CardContent className="p-5">
                 <div className="flex items-center gap-3">
                   <Avatar className="size-11">
-                    <AvatarImage src={mentor.profile?.avatar ?? undefined} alt="" loading="lazy" />
+                    <AvatarImage src={avatarSrc(mentor.profile?.avatar)} alt="" loading="lazy" />
                     <AvatarFallback>{initials(mentor.profile?.name)}</AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
