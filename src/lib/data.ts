@@ -190,7 +190,7 @@ export const publicTopMentorsQuery = () =>
       unwrap<MentorWithProfile[]>(
         await supabase
           .from("mentors")
-          .select("*, profile:profiles(*)")
+          .select("*, profile:profiles(id, name, avatar, created_at)")
           .order("rating", { ascending: false })
           .limit(3),
       ),
