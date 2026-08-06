@@ -60,13 +60,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "bookings_mentor_id_fkey"
-            columns: ["mentor_id"]
-            isOneToOne: false
-            referencedRelation: "public_mentors"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "bookings_slot_id_fkey"
             columns: ["slot_id"]
             isOneToOne: false
@@ -191,13 +184,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "reviews_mentor_id_fkey"
-            columns: ["mentor_id"]
-            isOneToOne: false
-            referencedRelation: "public_mentors"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "reviews_student_id_fkey"
             columns: ["student_id"]
             isOneToOne: false
@@ -242,13 +228,6 @@ export type Database = {
             referencedRelation: "mentors"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "slots_mentor_id_fkey"
-            columns: ["mentor_id"]
-            isOneToOne: false
-            referencedRelation: "public_mentors"
-            referencedColumns: ["id"]
-          },
         ]
       }
       user_roles: {
@@ -274,29 +253,7 @@ export type Database = {
       }
     }
     Views: {
-      public_mentors: {
-        Row: {
-          avatar: string | null
-          bio: string | null
-          created_at: string | null
-          experience: number | null
-          id: string | null
-          name: string | null
-          profile_id: string | null
-          rating: number | null
-          specialization: string | null
-          total_reviews: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "mentors_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: true
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       book_slot: {
